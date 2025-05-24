@@ -6,3 +6,9 @@ export interface AuthState {
   isCheckingAuth: boolean;
   checkAuth: () => Promise<void>;
 }
+
+export interface SignupFormData {
+  fullName: string;
+  email: string;
+  password: string;
+}

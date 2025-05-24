@@ -1,5 +1,5 @@
 import { axiosInstance } from "@/lib/requests";
-import type { AuthState } from "@/types/types";
+import type { AuthState, SignupFormData } from "@/types/types";
 import { create } from "zustand";
 
 export const useAuthStore = create<AuthState>((set) => ({
@@ -8,7 +8,7 @@ export const useAuthStore = create<AuthState>((set) => ({
   isLoggingIn: false,
   isUpdatingProfile: false,
   isCheckingAuth: true,
-  
+
   checkAuth: async () => {
     try {
       const response = await axiosInstance.get("/auth/check");
@@ -18,6 +18,18 @@ export const useAuthStore = create<AuthState>((set) => ({
       set({ authUser: null });
     } finally {
       set({ isCheckingAuth: false });
+    }
+  },
+
+  signup: async (formData: SignupFormData) => {
+    set({ isSigningUp: true });
+    try {
+      const response = await axiosInstance.post("/auth/signup", formData);
+      set({ authUser: response.data });
+    } catch (error) {
+      console.error("Error signing up:", error);
+    } finally {
+      set({ isSigningUp: false });
     }
   },
 }));

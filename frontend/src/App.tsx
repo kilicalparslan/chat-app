@@ -7,7 +7,7 @@ import Settings from "./components/pages/Settings";
 import Profiles from "./components/pages/Profiles";
 import { useAuthStore } from "./store/useAuthStore";
 import { useEffect } from "react";
-import { Loader } from "lucide-react"
+import { Loader } from "lucide-react";
 
 function App() {
   const { authUser, checkAuth, isCheckingAuth } = useAuthStore();
@@ -17,10 +17,10 @@ function App() {
   }, [checkAuth]);
 
   console.log({ authUser });
-  if(isCheckingAuth && !authUser) {
+  if (isCheckingAuth && !authUser) {
     return (
       <div className="flex justify-center items-center h-screen">
-        <Loader className="animate-spin size-10"/>
+        <Loader className="animate-spin size-10" />
       </div>
     );
   }
@@ -28,9 +28,18 @@ function App() {
     <div>
       <Navbar />
       <Routes>
-        <Route path="/" element={authUser ? <Home /> : <Navigate to="/login"/>} />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/login" element={<Login />} />
+        <Route
+          path="/"
+          element={authUser ? <Home /> : <Navigate to="/login" />}
+        />
+        <Route
+          path="/signup"
+          element={!authUser ? <Signup /> : <Navigate to="/" />}
+        />
+        <Route
+          path="/login"
+          element={!authUser ? <Login /> : <Navigate to="/" />}
+        />
         <Route path="/settings" element={<Settings />} />
         <Route path="/profile" element={<Profiles />} />
       </Routes>
