@@ -1,7 +1,8 @@
 import { useAuthStore } from "@/store/useAuthStore";
-import { Lock, Mail, MessageSquare, User } from "lucide-react";
+import { Loader2, Lock, Mail, MessageSquare, User } from "lucide-react";
 import { useState } from "react";
 import { Input } from "../ui/input";
+import { Link } from "react-router-dom";
 
 const Signup = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -117,7 +118,26 @@ const Signup = () => {
                 />
               </div>
             </div>
+            <button
+              type="submit"
+              className="btn btn-primary bg-slate-800 w-full cursor-pointer hover:bg-slate-900 transition-colors py-2 rounded-xl"
+              disabled={isSigningUp}
+            >
+              {isSigningUp ? (
+                <Loader2 className="size-5 animate-spin" />
+              ) : (
+                "Sign Up"
+              )}
+            </button>
           </form>
+          <div className="text-center">
+            <p className="text-base-content/60 mt-4 text-gray-400">
+              Already have an account?{" "}
+              <Link to="/login" className="text-blue-400 hover:underline">
+                Login
+              </Link>
+            </p>
+          </div>
         </div>
       </div>
     </div>
