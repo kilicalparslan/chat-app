@@ -1,8 +1,18 @@
 import { useAuthStore } from "@/store/useAuthStore";
-import { Loader2, Lock, Mail, MessageSquare, User } from "lucide-react";
+import {
+  Eye,
+  EyeOff,
+  Loader2,
+  Lock,
+  Mail,
+  MessageSquare,
+  User,
+} from "lucide-react";
 import { useState } from "react";
 import { Input } from "../ui/input";
 import { Link } from "react-router-dom";
+import AuthImagePattern from "../AuthImagePattern";
+import toast from "react-hot-toast";
 
 const Signup = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -15,9 +25,39 @@ const Signup = () => {
 
   const { signup, isSigningUp } = useAuthStore();
 
-  const validateForm = () => {};
+  const validateForm = (): boolean => {
+    if (!formData.fullName.trim()) {
+      toast.error("Full name is required");
+      return false;
+    }
+    if (!formData.email.trim()) {
+      toast.error("Email is required");
+      return false;
+    }
+    if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      toast.error("Invalid email format");
+      return false;
+    }
+    if (!formData.password) {
+      toast.error("Password is required");
+      return false;
+    }
+    if (formData.password.length < 6) {
+      toast.error("Password must be at least 6 characters");
+      return false;
+    }
+    if (formData.password !== formData.confirmPassword) {
+      toast.error("Passwords do not match");
+      return false;
+    }
+
+    return true;
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    const success = validateForm();
+    if (success) signup(formData);
   };
 
   return (
@@ -85,7 +125,7 @@ const Signup = () => {
                   <Lock className="size-5 text-base-content/40" />
                 </div>
                 <Input
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   className="input input-bordered w-full pl-10 border-slate-400"
                   placeholder="Enter your password"
                   value={formData.password}
@@ -93,6 +133,17 @@ const Signup = () => {
                     setFormData({ ...formData, password: e.target.value })
                   }
                 />
+                <button
+                  type="button"
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? (
+                    <EyeOff className="size-5 text-base-content/40" />
+                  ) : (
+                    <Eye className="size-5 text-base-content/40" />
+                  )}
+                </button>
               </div>
             </div>
 
@@ -105,7 +156,7 @@ const Signup = () => {
                   <Lock className="size-5 text-base-content/40" />
                 </div>
                 <Input
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   className="input input-bordered w-full pl-10 border-slate-400"
                   placeholder="Confirm your password"
                   value={formData.confirmPassword}
@@ -116,6 +167,17 @@ const Signup = () => {
                     })
                   }
                 />
+                <button
+                  type="button"
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? (
+                    <EyeOff className="size-5 text-base-content/40" />
+                  ) : (
+                    <Eye className="size-5 text-base-content/40" />
+                  )}
+                </button>
               </div>
             </div>
             <button
@@ -140,6 +202,11 @@ const Signup = () => {
           </div>
         </div>
       </div>
+
+      <AuthImagePattern
+        title="Join the Conversation"
+        description="Connect with others and share your thoughts"
+      />
     </div>
   );
 };

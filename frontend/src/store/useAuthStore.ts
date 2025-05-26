@@ -1,5 +1,6 @@
 import { axiosInstance } from "@/lib/requests";
 import type { AuthState, SignupFormData } from "@/types/types";
+import toast from "react-hot-toast";
 import { create } from "zustand";
 
 export const useAuthStore = create<AuthState>((set) => ({
@@ -26,10 +27,21 @@ export const useAuthStore = create<AuthState>((set) => ({
     try {
       const response = await axiosInstance.post("/auth/signup", formData);
       set({ authUser: response.data });
-    } catch (error) {
-      console.error("Error signing up:", error);
+      toast.success("Account created successfully!");
+    } catch (error: any) {
+      toast.error(error.response.data.message);
     } finally {
       set({ isSigningUp: false });
+    }
+  },
+
+  logout: async () => {
+    try {
+      await axiosInstance.post("/auth/logout");
+      set({ authUser: null });
+      toast.success("Logged out successfully!");
+    } catch (error) {
+      toast.error("Failed to log out");
     }
   },
 }));
