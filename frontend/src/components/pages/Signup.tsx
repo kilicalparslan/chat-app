@@ -13,6 +13,7 @@ import { Input } from "../ui/input";
 import { Link } from "react-router-dom";
 import AuthImagePattern from "../AuthImagePattern";
 import toast from "react-hot-toast";
+import { Button } from "../ui/button";
 
 const Signup = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -180,7 +181,7 @@ const Signup = () => {
                 </button>
               </div>
             </div>
-            <button
+            <Button
               type="submit"
               className="btn btn-primary bg-slate-800 w-full cursor-pointer hover:bg-slate-900 transition-colors py-2 rounded-xl"
               disabled={isSigningUp}
@@ -190,7 +191,7 @@ const Signup = () => {
               ) : (
                 "Sign Up"
               )}
-            </button>
+            </Button>
           </form>
           <div className="text-center">
             <p className="text-base-content/60 mt-4 text-gray-400">

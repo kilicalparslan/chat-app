@@ -1,5 +1,5 @@
 import { axiosInstance } from "@/lib/requests";
-import type { AuthState, SignupFormData } from "@/types/types";
+import type { AuthState, LoginFormData, SignupFormData } from "@/types/types";
 import toast from "react-hot-toast";
 import { create } from "zustand";
 
@@ -32,6 +32,19 @@ export const useAuthStore = create<AuthState>((set) => ({
       toast.error(error.response.data.message);
     } finally {
       set({ isSigningUp: false });
+    }
+  },
+
+  login: async (FormData: LoginFormData) => {
+    set({ isLoggingIn: true });
+    try {
+      const response = await axiosInstance.post("/auth/login", FormData);
+      set({ authUser: response.data });
+      toast.success("Logged in successfully!");
+    } catch (error: any) {
+      toast.error(error.response.data.message);
+    } finally {
+      set({ isLoggingIn: false });
     }
   },
 
