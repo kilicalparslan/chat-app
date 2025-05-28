@@ -3,8 +3,8 @@ import Navbar from "./components/Navbar";
 import Home from "./components/pages/Home";
 import Signup from "./components/pages/Signup";
 import Login from "./components/pages/Login";
+import Profile from "./components/pages/Profile";
 import Settings from "./components/pages/Settings";
-import Profiles from "./components/pages/Profiles";
 import { useAuthStore } from "./store/useAuthStore";
 import { useEffect } from "react";
 import { Loader } from "lucide-react";
@@ -42,7 +42,7 @@ function App() {
           element={!authUser ? <Login /> : <Navigate to="/" />}
         />
         <Route path="/settings" element={<Settings />} />
-        <Route path="/profile" element={<Profiles />} />
+        <Route path="/profile" element={<Profile />} />
       </Routes>
       <Toaster />
     </div>

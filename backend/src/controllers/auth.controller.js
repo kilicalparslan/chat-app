@@ -92,7 +92,7 @@ export const updateProfile = async (req, res) => {
     if (!profilePicture) {
       return res.status(400).json({ message: "Profile picture is required" });
     }
-    const uploadResponse = await cloudinary.v2.uploader.upload(profilePicture);
+    const uploadResponse = await cloudinary.uploader.upload(profilePicture);
     const updatedUser = await User.findByIdAndUpdate(
       userId,
       { profilePicture: uploadResponse.secure_url },
@@ -112,4 +112,4 @@ export const checkAuth = (req, res) => {
     console.log("Error in checkAuth:", error.message);
     res.status(500).json({ message: "Internal Server Error" });
   }
-}
+};

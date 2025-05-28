@@ -8,6 +8,7 @@ export interface AuthState {
   signup: (formData: SignupFormData) => Promise<void>;
   login: (formData: LoginFormData) => Promise<void>;
   logout: () => Promise<void>;
+  updateProfile: (data: UpdateProfileData) => Promise<void>;
 }
 
 export interface SignupFormData {
@@ -25,3 +26,11 @@ export interface AuthImagePatternProps {
   title: string;
   description: string;
 }
+
+export type UpdateProfileData = {
+  fullName?: string;
+  email?: string;
+  password?: string;
+  avatar?: File | null;
+  profilePicture?: string;
+};
