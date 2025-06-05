@@ -6,10 +6,7 @@ import { Button } from "./ui/button";
 const Navbar = () => {
   const { authUser, logout } = useAuthStore();
   return (
-    <header
-      className="bg-slate-800 fixed w-full top-0 z-40 
-    backdrop-blur-lg bg-base-100/80"
-    >
+    <header className="bg-sidebar fixed w-full top-0 z-40 backdrop-blur-lg bg-opacity-80 border-b border-primary/30">
       <div className="container mx-auto px-4 h-16">
         <div className="flex items-center justify-between h-full">
           <div className="flex items-center gap-8">
@@ -25,30 +22,30 @@ const Navbar = () => {
           </div>
 
           <div className="flex items-center gap-2 mt-1">
-            <Link
-              to={"/settings"}
-              className={
-                "btn btn-sm gap-2 transition-colors bg-slate-900 flex items-center hover:bg-slate-700 rounded-2xl px-2 py-1.5 text-base-content/80"
-              }
+            <Button
+              asChild
+              className="flex gap-2 items-center cursor-pointer bg-foreground text-background rounded-2xl"
             >
-              <Settings className="w-4 h-4" />
-              <span className="hidden sm:inline">Settings</span>
-            </Link>
+              <Link to="/settings">
+                <Settings className="w-4 h-4" />
+                <span className="hidden sm:inline">Settings</span>
+              </Link>
+            </Button>
 
             {authUser && (
               <>
-                <Link
-                  to={"/profile"}
-                  className={
-                    "btn btn-sm gap-2 transition-colors bg-slate-900 flex items-center hover:bg-slate-700 rounded-2xl px-2 py-1.5 text-base-content/80"
-                  }
+                <Button
+                  asChild
+                  className="flex gap-2 items-center cursor-pointer bg-foreground text-background rounded-2xl"
                 >
-                  <User className="size-5" />
-                  <span className="hidden sm:inline">Profile</span>
-                </Link>
+                  <Link to="/profile">
+                    <User className="w-4 h-4" />
+                    <span className="hidden sm:inline">Profile</span>
+                  </Link>
+                </Button>
 
                 <Button
-                  className="flex gap-2 items-center cursor-pointer bg-slate-800 rounded-2xl"
+                  className="flex gap-2 items-center cursor-pointer bg-foreground text-background rounded-2xl"
                   onClick={logout}
                 >
                   <LogOut className="size-5" />

@@ -1,9 +1,15 @@
+import type { ThemeStore, Theme } from "@/constants/theme";
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
-export const useThemeStore = create((set) => ({
-  theme: localStorage.getItem("chat-theme") || "coffee",
-  setTheme: (theme) => {
-    localStorage.setItem("chat-theme", theme);
-    set({ theme });
-  },
-}));
+export const useThemeStore = create<ThemeStore>()(
+  persist(
+    (set) => ({
+      theme: "light",
+      setTheme: (theme: Theme) => set({ theme }),
+    }),
+    {
+      name: "theme",
+    }
+  )
+);
