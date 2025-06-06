@@ -1,9 +1,14 @@
 import { create } from "zustand";
 import toast from "react-hot-toast";
 import { axiosInstance } from "@/lib/requests";
-import type { ChatState, Message, User } from "@/types/types";
+import type {
+  ChatState,
+  Message,
+  SendMessageParams,
+  User,
+} from "@/types/types";
 
-export const useChatStore = create<ChatState>((set) => ({
+export const useChatStore = create<ChatState>((set, get) => ({
   messages: [] as Message[],
   users: [] as User[],
   selectedUser: null as User | null,
@@ -26,7 +31,7 @@ export const useChatStore = create<ChatState>((set) => ({
   getMessages: async (userId: string) => {
     set({ isMessagesLoading: true });
     try {
-      const response = await axiosInstance.get(`/messages/${userId}`);
+      const response = await axiosInstance.get(`/messages/users/${userId}`);
       set({ messages: response.data });
     } catch (error) {
       set({ isMessagesLoading: false });
@@ -36,5 +41,20 @@ export const useChatStore = create<ChatState>((set) => ({
     }
   },
 
-  setSelectedUser: (user: User) => set({ selectedUser: user }),
+  sendMessage: async (messageData: SendMessageParams) => {
+    const { selectedUser, messages } = get();
+    try {
+      const response = await axiosInstance.post(
+        `/messages/send/${selectedUser?._id}`,
+        messageData
+      );
+      set({
+        messages: [...messages, response.data],
+      });
+    } catch (error) {
+      toast.error("Failed to send message");
+    }
+  },
+
+  setSelectedUser: (user: User | null) => set({ selectedUser: user }),
 }));

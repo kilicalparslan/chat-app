@@ -20,7 +20,8 @@ export interface ChatState {
   isMessagesLoading: boolean;
   getUsers: () => Promise<void>;
   getMessages: (userId: string) => Promise<void>;
-  setSelectedUser: (user: User) => void;
+  sendMessage: (messageData: SendMessageParams) => Promise<void>;
+  setSelectedUser: (user: User | null) => void;
 }
 
 export interface User {
@@ -28,14 +29,17 @@ export interface User {
   fullName: string;
   email: string;
   avatar?: string;
+  profilePicture?: string;
 }
 
 export interface Message {
-  id: string;
-  senderId: string;
-  receiverId: string;
-  content: string;
-  timestamp: string;
+  _id: string;
+  sender: string;
+  receiver: string;
+  text: string;
+  image?: string | null;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface SignupFormData {
@@ -53,6 +57,12 @@ export interface AuthImagePatternProps {
   title: string;
   description: string;
 }
+
+export type SendMessageParams = {
+  text: string;
+  image?: string | null;
+  userId: string;
+};
 
 export type UpdateProfileData = {
   fullName?: string;
