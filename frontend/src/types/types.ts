@@ -4,12 +4,15 @@ export interface AuthState {
   isLoggingIn: boolean;
   isUpdatingProfile: boolean;
   isCheckingAuth: boolean;
-  onlineUsers: User[];
+  onlineUsers: string[];
+  socket: any | null;
   checkAuth: () => Promise<void>;
   signup: (formData: SignupFormData) => Promise<void>;
   login: (formData: LoginFormData) => Promise<void>;
   logout: () => Promise<void>;
   updateProfile: (data: UpdateProfileData) => Promise<void>;
+  connectSocket: () => void;
+  disconnectSocket: () => void;
 }
 
 export interface ChatState {

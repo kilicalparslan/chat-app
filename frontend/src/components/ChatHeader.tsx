@@ -19,15 +19,18 @@ const ChatHeader = () => {
                 src={selectedUser.avatar || "/avatar.png"}
                 alt={selectedUser.fullName}
               />
+              {onlineUsers.includes(selectedUser._id) ? (
+                <span className="absolute bottom-0 right-0 size-3 bg-green-500 rounded-full ring-2 ring-zinc-900" />
+              ) : (
+                <span className="absolute bottom-0 right-0 size-3 bg-gray-500 rounded-full ring-2 ring-zinc-900" />
+              )}
             </div>
           </div>
 
           <div>
             <h3 className="font-medium">{selectedUser.fullName}</h3>
             <p className="text-sm text-foreground/70">
-              {onlineUsers.some((u) => u._id === selectedUser._id)
-                ? "Online"
-                : "Offline"}
+              {onlineUsers.includes(selectedUser._id) ? "Online" : "Offline"}
             </p>
           </div>
         </div>

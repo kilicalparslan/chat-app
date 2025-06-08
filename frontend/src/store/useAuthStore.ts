@@ -7,19 +7,22 @@ import type {
 } from "@/types/types";
 import toast from "react-hot-toast";
 import { create } from "zustand";
+import { io } from "socket.io-client";
 
-export const useAuthStore = create<AuthState>((set) => ({
+export const useAuthStore = create<AuthState>((set, get) => ({
   authUser: null,
   isSigningUp: false,
   isLoggingIn: false,
   isUpdatingProfile: false,
   isCheckingAuth: true,
   onlineUsers: [],
+  socket: null,
 
   checkAuth: async () => {
     try {
       const response = await axiosInstance.get("/auth/check");
       set({ authUser: response.data });
+      get().connectSocket();
     } catch (error) {
       console.log("Error checking auth:", error);
       set({ authUser: null });
@@ -34,6 +37,7 @@ export const useAuthStore = create<AuthState>((set) => ({
       const response = await axiosInstance.post("/auth/signup", formData);
       set({ authUser: response.data });
       toast.success("Account created successfully!");
+      get().connectSocket();
     } catch (error: any) {
       toast.error(error.response.data.message);
     } finally {
@@ -47,6 +51,7 @@ export const useAuthStore = create<AuthState>((set) => ({
       const response = await axiosInstance.post("/auth/login", formData);
       set({ authUser: response.data });
       toast.success("Logged in successfully!");
+      get().connectSocket();
     } catch (error: any) {
       toast.error(error.response.data.message);
     } finally {
@@ -59,6 +64,7 @@ export const useAuthStore = create<AuthState>((set) => ({
       await axiosInstance.post("/auth/logout");
       set({ authUser: null });
       toast.success("Logged out successfully!");
+      get().disconnectSocket();
     } catch (error) {
       toast.error("Failed to log out");
     }
@@ -74,6 +80,27 @@ export const useAuthStore = create<AuthState>((set) => ({
       toast.error(error.response.data.message);
     } finally {
       set({ isUpdatingProfile: false });
+    }
+  },
+
+  connectSocket: () => {
+    const { authUser } = get();
+    if (!authUser || get().socket?.connected) return;
+    const socket = io(import.meta.env.VITE_API_URL, {
+      query: {
+        userId: authUser._id,
+      },
+    });
+    socket.connect();
+    set({ socket: socket });
+    socket.on("getOnlineUsers", (userIds) => {
+      set({ onlineUsers: userIds });
+    });
+  },
+
+  disconnectSocket: () => {
+    if (get().socket?.connected) {
+      get().socket?.disconnect();
     }
   },
 }));
