@@ -24,6 +24,8 @@ export interface ChatState {
   getUsers: () => Promise<void>;
   getMessages: (userId: string) => Promise<void>;
   sendMessage: (messageData: SendMessageParams) => Promise<void>;
+  subscribeToMessages: () => void;
+  unsubscribeFromMessages: () => void;
   setSelectedUser: (user: User | null) => void;
 }
 

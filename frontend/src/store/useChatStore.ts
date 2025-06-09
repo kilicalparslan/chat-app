@@ -7,6 +7,7 @@ import type {
   SendMessageParams,
   User,
 } from "@/types/types";
+import { useAuthStore } from "./useAuthStore";
 
 export const useChatStore = create<ChatState>((set, get) => ({
   messages: [] as Message[],
@@ -60,6 +61,24 @@ export const useChatStore = create<ChatState>((set, get) => ({
     } catch (error) {
       toast.error("Failed to send message");
     }
+  },
+
+  subscribeToMessages: () => {
+    const { selectedUser } = get();
+    if (!selectedUser) return;
+
+    const socket = useAuthStore.getState().socket;
+
+    socket.on("newMessage", (newMessage: Message) => {
+      set({
+        messages: [...get().messages, newMessage],
+      });
+    });
+  },
+
+  unsubscribeFromMessages: () => {
+    const socket = useAuthStore.getState().socket;
+    socket.off("newMessage");
   },
 
   setSelectedUser: (user: User | null) => set({ selectedUser: user }),

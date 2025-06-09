@@ -1,5 +1,5 @@
 import { useChatStore } from "@/store/useChatStore";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import ChatHeader from "./ChatHeader";
 import MessageInput from "./MessageInput";
 import MessageSkeleton from "./MessageSkeleton";
@@ -7,15 +7,40 @@ import { useAuthStore } from "@/store/useAuthStore";
 import { formatMessageTime } from "@/lib/utils";
 
 const ChatContainer = () => {
-  const { messages, getMessages, isMessagesLoading, selectedUser } =
-    useChatStore();
+  const {
+    messages,
+    getMessages,
+    isMessagesLoading,
+    selectedUser,
+    subscribeToMessages,
+    unsubscribeFromMessages,
+  } = useChatStore();
   const { authUser } = useAuthStore();
+  const messageEnd = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (selectedUser) {
       getMessages(selectedUser._id);
     }
-  }, [selectedUser?._id, getMessages]);
+
+    subscribeToMessages();
+
+    return () => unsubscribeFromMessages();
+  }, [
+    selectedUser?._id,
+    getMessages,
+    subscribeToMessages,
+    unsubscribeFromMessages,
+  ]);
+
+  useEffect(() => {
+    if (messageEnd.current && messages) {
+      messageEnd.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "end",
+      });
+    }
+  }, [messages]);
 
   if (isMessagesLoading)
     return (
@@ -39,6 +64,7 @@ const ChatContainer = () => {
               className={`flex items-end gap-2 ${
                 isOwnMessage ? "justify-end" : "justify-start"
               }`}
+              ref={messageEnd}
             >
               {!isOwnMessage && (
                 <div className="w-10 h-10 rounded-full overflow-hidden border">

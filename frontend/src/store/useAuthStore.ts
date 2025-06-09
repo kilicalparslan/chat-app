@@ -7,7 +7,7 @@ import type {
 } from "@/types/types";
 import toast from "react-hot-toast";
 import { create } from "zustand";
-import { io } from "socket.io-client";
+import { io, type Socket } from "socket.io-client";
 
 export const useAuthStore = create<AuthState>((set, get) => ({
   authUser: null,
@@ -16,7 +16,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   isUpdatingProfile: false,
   isCheckingAuth: true,
   onlineUsers: [],
-  socket: null,
+  socket: null as Socket | null,
 
   checkAuth: async () => {
     try {
