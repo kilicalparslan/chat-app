@@ -1,20 +1,26 @@
 import { useChatStore } from "@/store/useChatStore";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import SidebarSkeleton from "./SidebarSkeleton";
 import { Users } from "lucide-react";
 import { Button } from "./ui/button";
 import { cn } from "@/lib/utils";
 import { useAuthStore } from "@/store/useAuthStore";
+import { Checkbox } from "./ui/checkbox";
 
 const Sidebar = () => {
   const { getUsers, users, selectedUser, setSelectedUser, isUsersLoading } =
     useChatStore();
 
   const { onlineUsers } = useAuthStore();
+  const [showOnlineUsers, setShowOnlineUsers] = useState(false);
 
   useEffect(() => {
     getUsers();
   }, [getUsers]);
+
+  const filteredUsers = showOnlineUsers
+    ? users.filter((user) => onlineUsers.includes(user._id))
+    : users;
 
   if (isUsersLoading) return <SidebarSkeleton />;
 
@@ -27,9 +33,23 @@ const Sidebar = () => {
             Contacts
           </span>
         </div>
+        <div className="mt-3 hidden lg:flex items-center gap-2">
+          <label className="cursor-pointer flex items-center gap-2">
+            <Checkbox
+              checked={showOnlineUsers}
+              onCheckedChange={(e) => setShowOnlineUsers(e ? true : false)}
+            />
+            <span className="text-sm text-muted-foreground">
+              Show Online Users
+            </span>
+          </label>
+          <span className="text-xs text-foreground/50">
+            ({onlineUsers.length - 1} online)
+          </span>
+        </div>
       </div>
       <div className=" w-full py-3">
-        {users.map((user) => (
+        {filteredUsers.map((user) => (
           <Button
             key={user._id}
             variant="ghost"
@@ -65,7 +85,7 @@ const Sidebar = () => {
           </Button>
         ))}
 
-        {users.length === 0 && (
+        {filteredUsers.length === 0 && (
           <div className="text-center text-zinc-500 py-4">No online users</div>
         )}
       </div>
